@@ -1,0 +1,2 @@
+farm-haystack[colab,ocr,preprocessing,file-conversion,pdf,inference]
+torch torchvision --index-url https://download.pytorch.org/whl/cpu
