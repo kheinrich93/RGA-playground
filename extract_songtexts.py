@@ -6,6 +6,9 @@ from tqdm import tqdm
 
 from src.helper import get_artist_id, get_access_token
 
+# TODO: check for duplicates of songs and quantity
+
+
 access_token = get_access_token(filename = 'auth_tokens/genius.json')
 
 # Construct the API endpoint to get songs by the artist
@@ -24,7 +27,9 @@ if response.status_code == 200:
     songs = data['response']['songs']
 
     # First n songs for debugging
-    songs = songs[:10]
+    #songs = songs[:10]
+
+    print(f"Found {len(songs)} songs")
 
     # Extract lyric 'path' from songs 
     song_lyric_urls = [f"https://genius.com{song['path']}" for song in songs]
