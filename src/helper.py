@@ -1,4 +1,5 @@
 import requests
+import json
 from bs4 import BeautifulSoup
 import pandas as pd
 
@@ -6,7 +7,7 @@ import pandas as pd
 def clean_text(text: str) -> str:
     return text.encode('ascii', 'ignore').decode('ascii')
 
-# Function to scrape the Wikipedia page for song names
+# DEPRATED: Function to scrape the Wikipedia page for song names
 def scrap_wiki_for_songnames(wiki_url: str) -> pd.DataFrame:
     # Fetch the content of the page
     response = requests.get(wiki_url)
@@ -56,3 +57,30 @@ def scrap_wiki_for_songnames(wiki_url: str) -> pd.DataFrame:
     return df
 
     
+def get_access_token(filename: str) -> str:
+    with open(filename) as f:
+        auth = json.load(f)
+        access_token = auth['access_token']
+    return access_token
+
+
+def get_from_genius(endpoint: str, access_token: str) -> dict:
+    # Make the GET request
+    response = requests.get(endpoint, headers={'Authorization': 'Bearer ' + access_token})
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Process the response
+        data = response.json()
+        # Do something with the data
+        return data
+    else:
+        print('Error:', response.status_code)
+        return None
+
+    
+def get_artist_id(artist_name: str, access_token: str) -> int:
+    search_endpoint = f'https://api.genius.com/search?q={artist_name}'
+    data = get_from_genius(search_endpoint, access_token)
+    return data['response']['hits'][0]['result']['primary_artist']['id']
+
