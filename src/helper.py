@@ -6,17 +6,7 @@ import pandas as pd
 def clean_text(text: str) -> str:
     return text.encode('ascii', 'ignore').decode('ascii')
 
-# Function to export the DataFrame to a CSV file, native csv function (.to_csv) does not work cause of special characters
-def output_csv(df: pd.DataFrame, output_file: str) -> None:
-    with open(output_file, 'w', newline='', encoding='utf-8') as file:
-        # Write header
-        file.write('Title\n')
-        # Write each row
-        for title in df['Title']:
-            file.write(f'{title}\n')
-    print(f"Exported to {output_file}")
-
-
+# Function to scrape the Wikipedia page for song names
 def scrap_wiki_for_songnames(wiki_url: str) -> pd.DataFrame:
     # Fetch the content of the page
     response = requests.get(wiki_url)
@@ -53,6 +43,9 @@ def scrap_wiki_for_songnames(wiki_url: str) -> pd.DataFrame:
     # Replace each type of quote character with an empty string
     for quote in quote_chars:
         df['Title'] = df['Title'].str.replace(quote, '')
+
+    # replace , with .
+    df['Title'] = df['Title'].str.replace(',', '.')
 
     # Convert the DataFrame to a string
     df.to_string(index=False)
