@@ -34,6 +34,7 @@ def remove_duplicate_songs(df: pd.DataFrame, verbose: bool = False) -> pd.DataFr
     df.loc[:, 'song_names'] = df['song_names'].str.replace('-lyrics', '', regex=False)
     df.loc[:, 'song_names'] = df['song_names'].str.replace('-annotated', '', regex=False)
     df.loc[:, 'song_names'] = df['song_names'].str.replace('-demo', '', regex=False)
+    df.loc[:, 'song_names'] = df['song_names'].str.replace('-', ' ', regex=False)
 
     # create list of indexes to remove
     to_remove = []
@@ -56,6 +57,7 @@ def remove_duplicate_songs(df: pd.DataFrame, verbose: bool = False) -> pd.DataFr
     df = df[~df.index.isin(to_remove)]
     # reset index
     df = df.reset_index(drop=True)
+
     print(df['song_names'].head(10)) if verbose else None
 
     print("Finished removing duplicates. Added column 'song_names' with cleaned song names.")
