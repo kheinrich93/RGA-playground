@@ -4,6 +4,16 @@ import pandas as pd
 from src.preprocess_helper import clean_up_lyrics, remove_duplicate_songs
 from src.helper import load_json
 
+
+# TODO:
+'''
+sometimes "-" is in songtext and should stay there
+need to add periods (check for capital letter? or \n ?)
+Some songtext are not correct 
+
+'''
+
+
 # Load your JSON data
 input_filename = "output/greenday_lyrics.json"
 output_filename = "output/greenday_lyrics_preprocessed.json"
@@ -29,5 +39,5 @@ print(f"Number of cleaned songs: {df.shape[0]}")
 lyrics_dict = df.set_index('song_names')['cleaned_lyrics'].to_dict()
 with open(output_filename, 'w') as f:
     json.dump(lyrics_dict, f, indent=4)
-    
+
 print(f"Saved preprocessed lyrics to {output_filename}")
