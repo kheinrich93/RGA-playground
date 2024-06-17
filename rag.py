@@ -1,10 +1,9 @@
-import json
 import re
 
 from haystack.document_stores import InMemoryDocumentStore
 from haystack.nodes import DensePassageRetriever, FARMReader
 from haystack.pipelines import ExtractiveQAPipeline
-from haystack.utils import clean_wiki_text, convert_files_to_docs, fetch_archive_from_http, print_answers
+from haystack.utils import print_answers
 
 from src.helper import load_json
 
