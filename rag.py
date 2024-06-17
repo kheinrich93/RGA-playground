@@ -6,7 +6,12 @@ from haystack.nodes import DensePassageRetriever, FARMReader
 from haystack.pipelines import ExtractiveQAPipeline
 from haystack.utils import clean_wiki_text, convert_files_to_docs, fetch_archive_from_http, print_answers
 
-# bring data into proper format: 
+from src.helper import load_json
+
+# Load JSON data
+data = load_json("output/greenday_lyrics_preprocessed.json")
+
+# Proper format: 
 '''
 docs = [
     {
@@ -15,23 +20,16 @@ docs = [
     }, ...
 ]
 '''
-
-
-
-# Load your JSON data
-with open("output\greenday_lyrics.json", "r") as file:
-    data = json.load(file)
-
-# replace all newline characters with a space
-for url, lyrics in data.items():
-    data[url] = lyrics.replace('\n', ' ')
+# replace all newline characters with a space (still needed?)
+for song_name, lyrics in data.items():
+    data[song_name] = lyrics.replace('\n', ' ')
     # remove everything that is in [] brackets and the brackets themselves
-    data[url] = re.sub(r'\[.*?\]', '', data[url])
+    data[song_name] = re.sub(r'\[.*?\]', '', data[song_name])
 
 # Create a list of documents
 documents = []
-for url, lyrics in data.items():
-    documents.append({"content": lyrics, "meta": {"url": url}})
+for song_name, lyrics in data.items():
+    documents.append({"content": lyrics, "meta": {"song_name": song_name}})
 
 # Initialize the Document Store
 document_store = InMemoryDocumentStore()
@@ -57,8 +55,8 @@ pipeline = ExtractiveQAPipeline(reader, retriever)
 
 # Ask questions
 questions = [
-    "What is '21 guns' about?",
-    "What is 'american idiot' about?",
+    "21 guns",
+    "american idiot",
 ]
 
 for question in questions:
