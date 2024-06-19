@@ -1,2 +1,2 @@
-farm-haystack[colab,ocr,preprocessing,file-conversion,pdf,inference]
-torch torchvision --index-url https://download.pytorch.org/whl/cpu
+haystack-ai==2.2.3
+torch --index-url https://download.pytorch.org/whl/cpu
