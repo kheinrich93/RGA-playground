@@ -1,5 +1,4 @@
 import requests
-import json
 from bs4 import BeautifulSoup
 import pandas as pd
 
@@ -55,13 +54,6 @@ def scrap_wiki_for_songnames(wiki_url: str) -> pd.DataFrame:
     df['Title'] = df['Title'].apply(clean_text)
 
     return df
-
-    
-def get_access_token(filename: str) -> str:
-    with open(filename) as f:
-        auth = json.load(f)
-        access_token = auth['access_token']
-    return access_token
 
 
 def get_from_genius(endpoint: str, access_token: str) -> dict:
