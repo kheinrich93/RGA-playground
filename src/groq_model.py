@@ -5,11 +5,8 @@
 import os
 from typing import Any, Callable, Dict, List, Optional, Union
 
-# from openai import OpenAI, Stream
-# from openai.types.chat import ChatCompletion, ChatCompletionChunk
+from groq import Groq, Stream
 from groq.types.chat import ChatCompletion, ChatCompletionChunk
-from groq import Stream
-from groq import Groq
 
 from haystack import component, default_from_dict, default_to_dict, logging
 from haystack.dataclasses import ChatMessage, StreamingChunk
