@@ -3,11 +3,13 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-from src.webscrap_helper import get_artist_id, get_access_token
+from src.helper import get_api_token
+from src.webscrap_helper import get_artist_id
+
 
 # TODO: check for duplicates of songs and quantity
 
-access_token = get_access_token(filename='auth_tokens/genius.json')
+access_token = get_api_token(filename='auth_tokens/genius.json')
 
 # Construct the API endpoint to get songs by the artist
 artist_name = 'Green Day'
