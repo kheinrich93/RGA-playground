@@ -1,4 +1,5 @@
 import json
+from typing import List
 
 def load_json(filename: str) -> dict:
     with open(filename, "r") as file:
@@ -8,3 +9,19 @@ def load_json(filename: str) -> dict:
 def get_api_token(filename: str) -> str:
     data = load_json(filename)
     return data["access_token"]
+
+def print_pretty_results(question:List, responses:List, show_meta_data:bool = False) -> None:
+    # check if question and reponses is a list 
+    if not isinstance(question, list): question = [question]
+    if not isinstance(responses, list): responses = [responses]
+
+    assert len(question) == len(responses), "Length of question and responses must be the same"
+
+    # zip question and responses together
+    for q, response in zip(question, responses):
+        print("Question:", q)
+        print("Answer:", response["generator"]["replies"][0])
+        if show_meta_data:
+            print("Context:", response["generator"]["meta"][0])
+        print("\n", "\n")
+

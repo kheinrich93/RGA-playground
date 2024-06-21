@@ -9,23 +9,14 @@ from haystack.components.readers import ExtractiveReader
 from haystack.components.builders import PromptBuilder
 
 from src.groq_model import GroqGenerator
-from src.helper import load_json, get_api_token
+from src.helper import load_json, get_api_token, print_pretty_results
 
 
 # TODO: 
 '''
 - check hybrid retrieval: https://haystack.deepset.ai/tutorials/33_hybrid_retrieval
-- Improve output readability -> pretty_print_results
 - try other document stores -> DB!
 '''
-
-def pretty_print_results(prediction):
-    # for doc in prediction["documents"]:
-    #     print(doc.meta["title"], "\t", doc.score)
-    #     print(doc.meta["abstract"])
-    #     print("\n", "\n")
-    return
-
 
 class NLP_pipeline():
     def __init__(self) -> None:
@@ -106,25 +97,29 @@ class NLP_pipeline():
         self.rag_pipeline.connect("retriever", "prompt_builder.documents")
         self.rag_pipeline.connect("prompt_builder", "generator")
 
-
         self.rag_pipeline.draw("rag_pipeline.png") if plot_pipeline else None
 
 
     def run_extractive_pipeline(self, query:List):
+        responses = []
         for q in query:
-            result = self.extractive_qa_pipeline.run(
+            response = self.extractive_qa_pipeline.run(
                 data={"text_embedder": {"text": q},
                                         "retriever": {"top_k": 3}, 
                                         "reader": {"query": q, "top_k": 2}})
-            print(result)
+            responses.append(response)
+
+        print(responses)
 
     def run_rag_pipeline(self, query:List):
+        responses = []
         for q in query:
             response = self.rag_pipeline.run({"text_embedder": {"text": q}, 
                                             "retriever": {"top_k": 3},
                                             "prompt_builder": {"question": q}})
-            print(response)
+            responses.append(response)
 
+        print_pretty_results(query, responses)
 
 
 query = [
