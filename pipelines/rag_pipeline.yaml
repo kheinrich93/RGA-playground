@@ -1,0 +1,59 @@
+components:
+  embedding_retriever:
+    init_parameters:
+      document_store:
+        init_parameters:
+          bm25_algorithm: BM25L
+          bm25_parameters: {}
+          bm25_tokenization_regex: (?u)\b\w\w+\b
+          embedding_similarity_function: dot_product
+        type: haystack.document_stores.in_memory.document_store.InMemoryDocumentStore
+      filters: null
+      return_embedding: false
+      scale_score: false
+      top_k: 10
+    type: haystack.components.retrievers.in_memory.embedding_retriever.InMemoryEmbeddingRetriever
+  generator:
+    init_parameters:
+      api_base_url: null
+      api_key: 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
+      generation_kwargs: {}
+      model: llama3-8b-8192
+      streaming_callback: null
+      system_prompt: null
+    type: src.groq_model.GroqGenerator
+  prompt_builder:
+    init_parameters:
+      required_variables: null
+      template: "\n        Create song lyrics similar to {{question}} and use the\
+        \ following lyrics as context:\n        {% for document in documents %}\n\
+        \            {{ document.content }}\n        {% endfor %}\n        "
+      variables: null
+    type: haystack.components.builders.prompt_builder.PromptBuilder
+  text_embedder:
+    init_parameters:
+      batch_size: 32
+      device:
+        device: cpu
+        type: single
+      model: sentence-transformers/all-MiniLM-L6-v2
+      normalize_embeddings: false
+      prefix: ''
+      progress_bar: true
+      suffix: ''
+      token:
+        env_vars:
+        - HF_API_TOKEN
+        strict: false
+        type: env_var
+      trust_remote_code: false
+    type: haystack.components.embedders.sentence_transformers_text_embedder.SentenceTransformersTextEmbedder
+connections:
+- receiver: embedding_retriever.query_embedding
+  sender: text_embedder.embedding
+- receiver: prompt_builder.documents
+  sender: embedding_retriever.documents
+- receiver: generator.prompt
+  sender: prompt_builder.prompt
+max_loops_allowed: 100
+metadata: {}

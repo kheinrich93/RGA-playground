@@ -1,5 +1,6 @@
 import json
 from typing import List
+from haystack import Pipeline
 
 def load_json(filename: str) -> dict:
     with open(filename, "r") as file:
@@ -24,4 +25,8 @@ def print_pretty_results(question:List, responses:List, show_meta_data:bool = Fa
         if show_meta_data:
             print("Context:", response["generator"]["meta"][0])
         print("\n", "\n")
+
+def output_pipeline_as_yaml(pipeline:Pipeline, filename:str) -> None:
+    with open(filename, "w") as f:
+        f.write(pipeline.dumps())
 

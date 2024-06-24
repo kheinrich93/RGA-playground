@@ -11,7 +11,7 @@ from haystack.components.readers import ExtractiveReader
 from haystack.components.builders import PromptBuilder
 
 from src.groq_model import GroqGenerator
-from src.helper import load_json, get_api_token, print_pretty_results
+from src.helper import load_json, get_api_token, print_pretty_results, output_pipeline_as_yaml
 
 
 # TODO: 
@@ -72,7 +72,7 @@ class NLP_pipeline():
     def create_llm_generator(self):
         self.llm_generator = GroqGenerator(get_api_token("auth_tokens/groq.json"))
 
-    def create_hybrid_extractive_pipeline(self, plot_pipeline:bool = False):
+    def create_hybrid_extractive_pipeline(self, plot_pipeline:bool = False, output_pipeline:bool = True):
         # Create pipeline components
         self.hybrid_extractive_qa_pipeline = Pipeline()
         
@@ -88,10 +88,11 @@ class NLP_pipeline():
         self.hybrid_extractive_qa_pipeline.connect("embedding_retriever", "document_joiner")
         self.hybrid_extractive_qa_pipeline.connect("document_joiner", "ranker")
 
+        output_pipeline_as_yaml(self.hybrid_extractive_qa_pipeline, "pipelines/hybrid_qa_pipeline.yaml") if output_pipeline else None
         self.hybrid_extractive_qa_pipeline.draw("hybrid_extractive_qa_pipeline.png") if plot_pipeline else None
 
 
-    def create_extractive_pipeline(self, plot_pipeline:bool = False):
+    def create_extractive_pipeline(self, plot_pipeline:bool = False, output_pipeline:bool = True):
         # Create reader for output
         self.reader = ExtractiveReader()
         self.reader.warm_up()
@@ -107,9 +108,10 @@ class NLP_pipeline():
         self.extractive_qa_pipeline.connect("text_embedder", "embedding_retriever")
         self.extractive_qa_pipeline.connect("embedding_retriever.documents", "reader.documents")
 
+        output_pipeline_as_yaml(self.extractive_qa_pipeline, "pipelines/extractive_qa_pipeline.yaml") if output_pipeline else None
         self.extractive_qa_pipeline.draw("extractive_qa_pipeline.png") if plot_pipeline else None
 
-    def create_rag_pipeline(self, plot_pipeline:bool = False):
+    def create_rag_pipeline(self, plot_pipeline:bool = False, output_pipeline:bool = True):
         # Create pipeline components
         self.rag_pipeline = Pipeline()
 
@@ -123,6 +125,8 @@ class NLP_pipeline():
         self.rag_pipeline.connect("embedding_retriever", "prompt_builder.documents")
         self.rag_pipeline.connect("prompt_builder", "generator")
 
+
+        output_pipeline_as_yaml(self.rag_pipeline, "pipelines/rag_pipeline.yaml") if output_pipeline else None
         self.rag_pipeline.draw("rag_pipeline.png") if plot_pipeline else None
 
 
@@ -164,12 +168,16 @@ query = [
     "american idiot",
 ]
 NLP_pipeline = NLP_pipeline()
+# --- data loading and embedding creation ---
 NLP_pipeline.load_data("output/greenday_lyrics_preprocessed.json")
 NLP_pipeline.create_embeddings_with_retriever()
 NLP_pipeline.create_text_embedder()
+
 # --- qa pipeline ---
 # NLP_pipeline.create_extractive_pipeline()
 # NLP_pipeline.run_extractive_pipeline(query)
+
+# --- hybrid qa pipeline ---
 # NLP_pipeline.create_hybrid_extractive_pipeline()
 # NLP_pipeline.run_hybrid_extractive_pipeline(query)
 

@@ -147,7 +147,7 @@ class GroqGenerator:
             api_base_url=self.api_base_url,
             generation_kwargs=self.generation_kwargs,
             system_prompt=self.system_prompt,
-            api_key=self.api_key.to_dict(),
+            api_key=self.api_key, # should be used: .to_dict() to serialize the Secret object
         )
 
     @classmethod
