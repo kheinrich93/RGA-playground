@@ -175,6 +175,7 @@ cython_debug/
 # folders
 output/
 auth_tokens/
+pipelines/
 
 # exceptions
 !requirements.txt
