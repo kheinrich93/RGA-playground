@@ -1,4 +1,5 @@
 import json
+import yaml
 from typing import List
 from haystack import Pipeline
 
@@ -29,4 +30,8 @@ def print_pretty_results(question:List, responses:List, show_meta_data:bool = Fa
 def output_pipeline_as_yaml(pipeline:Pipeline, filename:str) -> None:
     with open(filename, "w") as f:
         f.write(pipeline.dumps())
+
+def load_pipeline_from_yaml(filename:str) -> Pipeline:
+    pipeline_yaml = yaml.safe_load(open("pipelines/extractive_qa_pipeline.yaml"))
+    return Pipeline.from_dict(pipeline_yaml)
 

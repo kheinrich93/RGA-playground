@@ -11,7 +11,7 @@ from haystack.components.readers import ExtractiveReader
 from haystack.components.builders import PromptBuilder
 
 from src.groq_model import GroqGenerator
-from src.helper import load_json, get_api_token, print_pretty_results, output_pipeline_as_yaml
+from src.helper import load_json, get_api_token, print_pretty_results, output_pipeline_as_yaml, load_pipeline_from_yaml
 
 
 # TODO: 
@@ -129,6 +129,10 @@ class NLP_pipeline():
         output_pipeline_as_yaml(self.rag_pipeline, "pipelines/rag_pipeline.yaml") if output_pipeline else None
         self.rag_pipeline.draw("rag_pipeline.png") if plot_pipeline else None
 
+    def load_pipeline(self, pipeline_path:str):
+        # CANT LOAD DOCUMENT STORE FROM PIPELINE 
+        self.extractive_qa_pipeline = load_pipeline_from_yaml(pipeline_path)
+        print(f"Pipeline loaded from {pipeline_path}")
 
     def run_extractive_pipeline(self, query:List):
         responses = []
@@ -174,8 +178,8 @@ NLP_pipeline.create_embeddings_with_retriever()
 NLP_pipeline.create_text_embedder()
 
 # --- qa pipeline ---
-# NLP_pipeline.create_extractive_pipeline()
-# NLP_pipeline.run_extractive_pipeline(query)
+NLP_pipeline.create_extractive_pipeline()
+NLP_pipeline.run_extractive_pipeline(query)
 
 # --- hybrid qa pipeline ---
 # NLP_pipeline.create_hybrid_extractive_pipeline()
@@ -183,8 +187,8 @@ NLP_pipeline.create_text_embedder()
 
 # --- RAG pipeline ---
 # create prompt list that contains song with the following text around it "create song lyrics similar to [song]"
-NLP_pipeline.create_prompt_builder()
-NLP_pipeline.create_llm_generator()
-NLP_pipeline.create_rag_pipeline()
-NLP_pipeline.run_rag_pipeline(query)
+# NLP_pipeline.create_prompt_builder()
+# NLP_pipeline.create_llm_generator()
+# NLP_pipeline.create_rag_pipeline()
+# NLP_pipeline.run_rag_pipeline(query)
 
